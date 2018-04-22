@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
-import ast
-import os
-import glob, os
-import json
+import datetime as dt
 from sklearn.feature_extraction.text import CountVectorizer as CV
 from sklearn.feature_extraction.text import TfidfTransformer as TF
+<<<<<<< HEAD
 from sklearn.feature_extraction.text import TfidfVectorizer as TV
+=======
+
+>>>>>>> 219fc1bf99001156af105b5c2ed04d45e7c1e348
 def parse_csv():
     df_2016 = pd.read_csv("2016.csv")
     df_2017 = pd.read_csv("2017.csv")
@@ -14,6 +15,7 @@ def parse_csv():
     return df
 
 def vectorize_text(x_train, x_test):
+<<<<<<< HEAD
     count_vect = CV(strip_accents='unicode', analyzer = 'word')
     X_train_counts = count_vect.fit_transform(x_train["title"])
     tfidf_transformer = TF()
@@ -22,6 +24,23 @@ def vectorize_text(x_train, x_test):
     X_new_counts = count_vect.transform(x_test['title'])
     X_new_tfidf = tfidf_transformer.transform(X_new_counts)
     return X_train_tfidf, X_new_tfidf,count_vect
+=======
+   vectorizer = TF(strip_accents='unicode', analyzer = 'word')
+   text_train = vectorizer.fit_transform(x_train).toarray()
+   text_test = vectorizer.transform(x_test).toarray()
+   text_train,text_test = pd.DataFrame(text_train),pd.DataFrame(text_test)
+   return text_train, text_test
+>>>>>>> 219fc1bf99001156af105b5c2ed04d45e7c1e348
+
+"""
+Function that adds day, hour, and minute columns to the df.
+"""
+def add_time_columns(row):
+    utc_time = row['created_utc']
+    day = dt.datetime.fromtimestamp(int(utc_time)).strftime('%A')
+    hour = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-H')
+    minute = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-M')
+    return pd.Series([day, hour, minute], index = ['day', 'hour', 'minute'])
 
 
 def main():
@@ -37,6 +56,7 @@ def main():
     # print (text_train)
 
 
-
 if __name__ == '__main__':
-    main()
+    df = parse_csv()
+    df = df.apply(lambda row: add_time_columns(row), axis=1)
+    print(df)
