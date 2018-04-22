@@ -6,6 +6,7 @@ import glob, os
 import json
 from sklearn.feature_extraction.text import CountVectorizer as CV
 from sklearn.feature_extraction.text import TfidfTransformer as TF
+from sklearn.feature_extraction.text import TfidfVectorizer as TV
 def parse_csv():
     df_2016 = pd.read_csv("2016.csv")
     df_2017 = pd.read_csv("2017.csv")
@@ -13,12 +14,14 @@ def parse_csv():
     return df
 
 def vectorize_text(x_train, x_test):
+    count_vect = CV(strip_accents='unicode', analyzer = 'word')
+    X_train_counts = count_vect.fit_transform(x_train["title"])
+    tfidf_transformer = TF()
+    X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
 
-   vectorizer = TF(strip_accents='unicode', analyzer = 'word')
-   text_train = vectorizer.fit_transform(x_train).toarray()
-   text_test = vectorizer.transform(x_test).toarray()
-   text_train,text_test = pd.DataFrame(text_train),pd.DataFrame(text_test)
-   return text_train, text_test
+    X_new_counts = count_vect.transform(x_test['title'])
+    X_new_tfidf = tfidf_transformer.transform(X_new_counts)
+    return X_train_tfidf, X_new_tfidf,count_vect
 
 
 def main():
@@ -30,8 +33,8 @@ def main():
     x_train = train_set.drop(columns = ['score','created_utc'])
     x_test = test_set.drop(columns = ['score','created_utc'])
 
-    text_train, text_test = vectorize_text(x_train,x_test)
-    print (text_train)
+    text_train, text_test,count_vect = vectorize_text(x_train,x_test)
+    # print (text_train)
 
 
 
