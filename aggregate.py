@@ -12,6 +12,9 @@ def parse_csv():
     df = pd.concat([df_2016,df_2017])
     return df
 
+def write_combined_csv(df):
+    df.to_csv("2016_2017.csv")
+
 def vectorize_text(x_train, x_test):
 
     count_vect = CV(strip_accents='unicode', analyzer = 'word', max_features = 100000)
