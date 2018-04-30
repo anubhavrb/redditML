@@ -15,6 +15,7 @@ def parse_csv():
 Function that writes the concatenated df to a combined csv file.
 """
 def write_combined_csv(df):
+    df = df.fillna("")
     df.to_csv("2016_2017.csv")
 
 """
