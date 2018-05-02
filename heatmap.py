@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 def build_heatmap():
     df = pd.read_csv("2016_2017.csv")
-    #df = df[df['score'] >= 10000]
+    #df = df[df['score'] >= 100]
     df = df[['day_of_week', 'hour']]
 
     df_agg = aggregate_posts_by_day(df)
@@ -13,6 +13,7 @@ def build_heatmap():
     sns.heatmap(df_agg, linewidths = 0.2, square = True, fmt = 'g', yticklabels=['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
     plt.xticks(rotation=0)
     plt.yticks(rotation=0)
+    plt.axes().set_title("Heatmap of All Reddit Submissions")
     plt.show()
 
 def aggregate_posts_by_day(df):
