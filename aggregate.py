@@ -63,10 +63,9 @@ Master function to return the vectorized training and test sets.
 def get_dataset():
     df = pd.read_pickle('ten_percent_sampled.pkl')
     #df.to_pickle('ten-percent-sampled.pkl')
-    # df = pd.read_csv("2016_2017.csv")
     x_train, x_test, y_train, y_test = split_data(df)
 
-    v_train, v_test = vectorize_text_two(x_train['title'], x_test['title'])
+    v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
     #x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
     #x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
 
@@ -75,6 +74,7 @@ def get_dataset():
     print v_train
     print v_test
     return v_train, v_test, y_train, y_test
+
 
 
 """
