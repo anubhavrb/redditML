@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer as TV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
-
-
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
 """
 Save the sampled data to pickle file
 """
@@ -13,6 +13,7 @@ def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
     df = df.sample(frac=0.01)
+    df = df[df.score != 0]
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
     return 0
@@ -52,25 +53,29 @@ def read_dataset_from_file():
     print (v_train.shape)
 
     return x_train, x_test, y_train, y_test
+
+
+
+
 """
 Master function to return the vectorized training and test sets.
 """
 def get_dataset():
-    #df = pd.read_pickle('ten_percent_sampled.pkl')
+    df = pd.read_pickle('ten_percent_sampled.pkl')
     #df.to_pickle('ten-percent-sampled.pkl')
-    df = pd.read_csv("2016_2017.csv")
+    # df = pd.read_csv("2016_2017.csv")
     x_train, x_test, y_train, y_test = split_data(df)
 
-    #v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
+    v_train, v_test = vectorize_text_two(x_train['title'], x_test['title'])
     #x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
     #x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
 
     #x_train = pd.DataFrame(np.hstack([x_train, v_train]))
     #x_test = pd.DataFrame(np.hstack([x_test, v_test]))
+    print v_train
+    print v_test
+    return v_train, v_test, y_train, y_test
 
-    #return x_train, x_test, y_train, y_test
-
-    return x_train[['day_of_year', 'day_of_week', 'hour', 'minute']], x_test[['day_of_year', 'day_of_week', 'hour', 'minute']], y_train, y_test
 
 """
 Function that splits df into train and test sets based on a 80:20 split.
@@ -80,6 +85,32 @@ def split_data(df):
     x = df.drop('score', axis = 1)
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
     return x_train, x_test, y_train, y_test
+
+
+
+
+def vectorize_text_two(x_train,x_test):
+
+
+    x_train = x_train.fillna("")
+    count_vect = CountVectorizer()
+    X_train_counts = count_vect.fit_transform(x_train)
+    print X_train_counts.shape
+
+    tfidf_transformer = TfidfTransformer()
+    X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+    print X_train_tfidf.shape
+
+
+    X_new_counts = count_vect.transform(x_test)
+    X_new_tfidf = tfidf_transformer.transform(X_new_counts)
+
+    # text_train, text_test = pd.DataFrame(text_train), pd.DataFrame(text_test)
+    return X_train_tfidf, X_new_tfidf
+
+
+
+
 
 """
 Function that vectorizes the text data in the dataset.
@@ -109,4 +140,4 @@ def main():
     print reg.score(x_test, y_test)
 
 if __name__ == '__main__':
-    get_dataset()
+    save_sampled()

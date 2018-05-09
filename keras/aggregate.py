@@ -4,7 +4,8 @@ import json
 from keras.preprocessing.text import Tokenizer
 from sklearn.model_selection import train_test_split
 def vectorize_text(x_train, x_test):
-    tokenizer = Tokenizer()
+    vocab_size = 10000
+    tokenizer = Tokenizer(num_words = vocab_size)
     tokenizer.fit_on_texts(x_train)
     # Tokenizers come with a convenient list of words and IDs
     dictionary = tokenizer.word_index
@@ -12,9 +13,17 @@ def vectorize_text(x_train, x_test):
     with open('dictionary.json', 'w') as dictionary_file:
         json.dump(dictionary, dictionary_file)
 
-    text_train = tokenizer.texts_to_matrix(x_train)
-    text_test= tokenizer.texts_to_matrix(x_test)
+    # text_train = tokenizer.texts_to_matrix(x_train)
+    # text_test= tokenizer.texts_to_matrix(x_test)
+
+
+    text_train = sequence.pad_sequences(x_train, maxlen=20000)
+    text_test = sequence.pad_sequences(x_test, maxlen=20000)
     print (text_train)
+
+    print('text_train shape:', text_train.shape)
+    print('text_test shape:', text_test.shape)
+
     # text_train, text_test = pd.DataFrame(text_train), pd.DataFrame(text_test)
     return text_train, text_test
 
