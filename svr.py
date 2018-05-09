@@ -12,7 +12,7 @@ def run_model():
     print X_new.shape
     print x_test_new.shape
     parameters = {'kernel':('linear','rbf'),'C':[1000,2000],'degree':[2,5],'coef0':[0,1]}
-    regr = SVR(kernel = 'linear', C = 1000, degree = 5, coef0 = 0.5)
+    regr = SVR(kernel = 'linear', C = 2)
     # regr = GridSearchCV(svr,parameters)
 
     regr.fit(X_new, y_train)
