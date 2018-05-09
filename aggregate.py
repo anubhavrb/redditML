@@ -59,9 +59,10 @@ def get_dataset():
     #df = pd.read_pickle('ten_percent_sampled.pkl')
     #df.to_pickle('ten-percent-sampled.pkl')
     df = pd.read_csv("2016_2017.csv")
+    df = df.sample(frac=0.01)
     x_train, x_test, y_train, y_test = split_data(df)
 
-    #v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
+    v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
     #x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
     #x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
 
@@ -70,7 +71,7 @@ def get_dataset():
 
     #return x_train, x_test, y_train, y_test
 
-    return x_train[['day_of_year', 'day_of_week', 'hour', 'minute']], x_test[['day_of_year', 'day_of_week', 'hour', 'minute']], y_train, y_test
+    return v_train, v_test, y_train, y_test
 
 """
 Function that splits df into train and test sets based on a 80:20 split.
