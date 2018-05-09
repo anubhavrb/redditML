@@ -12,7 +12,7 @@ Save the sampled data to pickle file
 def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
-    df = df.sample(frac=0.01)
+    df = df.sample(frac=0.05)
     df = df[df.score != 0]
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
