@@ -1,13 +1,16 @@
 import pandas as pd
 from aggregate import read_dataset_from_file
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation,Flatten
 from keras import optimizers
 from keras import backend as K
 from keras import metrics
+from keras.preprocessing.text import one_hot
+from keras.preprocessing.sequence import pad_sequences
 import graphviz
 from keras.layers import Embedding
 from keras.utils import plot_model
+from aggregate import get_dataset
 
 def coeff_determination(y_true, y_pred):
     from keras import backend as K
@@ -16,24 +19,47 @@ def coeff_determination(y_true, y_pred):
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
 def run_model():
     model = Sequential()
-    x_train, x_test, y_train, y_test = read_dataset_from_file()
+    x_train, x_test, y_train, y_test = get_dataset()
 
+    print x_train['title']
+    print y_train.values
+    vocab_size = 40000
+    max_length = 30
+    embedding_space = 50
+    encoded_docs = [one_hot(x_train['title'].iloc[d], vocab_size) for d in range(x_train.shape[0])]
+    padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
+    print padded_docs
+    print y_train
+    input_dim =  x_train.shape[1]
+    output_dim = 32
 
-    max_features = 20000
-    embedding_dims = 50
-    # model.add(Dense(input_dim = 10000, units = 40,activation = 'relu'))
-    # model.add(Embedding(input_dim=x_train.shape[1], output_dim=10))
-    model.add(Embedding(20,
-                    embedding_dims,
-                    input_length=maxlen))
-    model.add(GlobalAveragePooling1D())
-    model.add(Dense(10, input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
+    model.add(Embedding(vocab_size, embedding_space, input_length=max_length))
+    model.add(Flatten())
+    model.add(Dense(100, kernel_initializer='normal',activation='relu'))
     model.add(Dense(1, kernel_initializer='normal'))
-    model.summary()
     model.compile(loss='mean_squared_error', optimizer='adam',metrics=[coeff_determination])
-    model.fit(x_train,y_train, batch_size=128, epochs = 10)
-
+    print model.summary()
+    model.fit(padded_docs,y_train.values, batch_size=128, epochs = 10)
     plot_model(model, to_file='model.png')
+
+
+
+
+
+
+
+    # # model.add(Embedding(20,
+    # #                 embedding_dims,
+    # #                 input_length=maxlen))
+    # # model.add(GlobalAveragePooling1D())
+    # # Add in regulations 64/128
+    # model.add(Dense(100, input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
+    # model.add(Dense(100, input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
+    # model.add(Dense(1, kernel_initializer='normal'))
+
+
+    #
+
 
 
 
