@@ -30,6 +30,28 @@ def add_time_columns(row):
     minute = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-M')
     return pd.Series([day_of_year, day_of_week, hour, minute], index = ['day_of_year', 'day_of_week', 'hour', 'minute'])
 
+
+"""
+Function that adds a target column to the dataset, on the basis of the score:
+Score   Bin
+0-1     0 (65th percentile)
+2-7     1 (95th percentile)
+8-43    2 (99th percentile)
+44-end  3 (100th percentile)
+"""
+def add_popularity_column(row):
+    score = row['score']
+    popularity = 0
+    if score < 2:
+        popularity = 0
+    elif score < 8:
+        popularity = 1
+    elif score < 44:
+        popularity = 2
+    else:
+        popularity = 4
+    return popularity
+
 """
 Function that reads in the 2016 and 2017 data, combines them, adds columns for
 specific times, and writes the combined csv file.
@@ -46,4 +68,6 @@ def change_columns(row):
     return pd.Series([var1, var2, var3])
 
 if __name__ == "__main__":
-    main()
+    df = pd.read_csv("2016_2017.csv")
+    df['popularity'] = df.apply(lambda row: add_popularity_column(row), axis=1)
+    df.to_csv("2016_2017.csv")
