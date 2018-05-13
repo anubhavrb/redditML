@@ -12,8 +12,8 @@ Save the sampled data to pickle file
 def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
-    df = df.sample(frac=0.05)
-    df = df[df.score != 0]
+    df = df.sample(frac=0.01)
+
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
     return 0
@@ -66,14 +66,14 @@ def get_dataset():
     x_train, x_test, y_train, y_test = split_data(df)
 
     v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
-    #x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
-    #x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
+    x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
+    x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
 
-    #x_train = pd.DataFrame(np.hstack([x_train, v_train]))
-    #x_test = pd.DataFrame(np.hstack([x_test, v_test]))
-    print v_train
-    print v_test
-    return v_train, v_test, y_train, y_test
+    x_train = pd.DataFrame(np.hstack([x_train, v_train]))
+    x_test = pd.DataFrame(np.hstack([x_test, v_test]))
+    print x_train.shape
+    print x_test
+    return x_train, x_test, y_train, y_test
 
 
 

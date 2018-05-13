@@ -7,12 +7,11 @@ def run_model():
     model = Sequential()
     x_train, x_test, y_train, y_test = read_dataset_from_file()
 
-    # model.add(Dense(input_dim = 10000, units = 40,activation = 'relu'))
-
-    model.add(Dense(x_train.shape[0], input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
-	model.add(Dense(1, kernel_initializer='normal'))
+    model.add(Dense(x_train.shape[0], input_dim=x_train.shape, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(1, kernel_initializer='normal'))
 
     model.compile(loss='mean_squared_error', optimizer='adam')
+    model.summary()
 
 
 if __name__ == '__main__':
