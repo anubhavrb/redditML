@@ -62,6 +62,7 @@ Master function to return the vectorized training and test sets.
 """
 def get_dataset():
     df = pd.read_pickle('ten_percent_sampled.pkl')
+    df = df.sample(frac=0.5)
     #df.to_pickle('ten-percent-sampled.pkl')
     x_train, x_test, y_train, y_test = split_data(df)
 

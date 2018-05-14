@@ -11,12 +11,9 @@ def run_model():
     x_test_new = feat_select.transform(x_test)
 
     regr = KNeighborsRegressor()
-    # regr = GridSearchCV(svr,parameters)
-    print x_train.shape
     regr.fit(x_train, y_train)
+    print "kNN Regressor with 10000 Feature selection"
     print regr.score(x_test, y_test)
-
-
 
 if __name__ == "__main__":
     run_model()

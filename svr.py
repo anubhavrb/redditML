@@ -9,20 +9,17 @@ def run_model():
     feat_select = SelectKBest(chi2, k=5000)
     X_new = feat_select.fit_transform(x_train, y_train)
     x_test_new = feat_select.transform(x_test)
-    print X_new.shape
-    print x_test_new.shape
-    parameters = {'kernel':('linear','rbf'),'C':[1000,2000],'degree':[2,5],'coef0':[0,1]}
-<<<<<<< HEAD
-    regr = SVR(kernel = 'linear', C = 2)
-=======
-    regr = SVR(kernel = 'linear', C = 5)
->>>>>>> 20fb2b1b8d2b5c105896a4599bcb554705246b70
-    # regr = GridSearchCV(svr,parameters)
+    #parameters = {'kernel':('linear','rbf'),'C':[0.1, 1.0, 5.0, 10.0]}
+
+    svr = SVR(kernel='linear')
+
+    #regr = GridSearchCV(svr,parameters)
 
     regr.fit(X_new, y_train)
-    print regr.score(x_test_new, y_test)
-    print regr.best_score
-    print regr.best_params
+    print "SVR with 5000 feature selection:"
+    print "Score", regr.score(x_test_new, y_test)
+    #print "GridSearch best score", regr.best_score
+    #print "GridSearch best params", regr.best_params
 
 if __name__ == "__main__":
     run_model()

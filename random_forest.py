@@ -7,6 +7,7 @@ def run_model():
 
     regr = RandomForestRegressor()
     regr.fit(x_train, y_train)
+    print "Random Forest Regressor"
     print regr.score(x_test,y_test)
 
 
