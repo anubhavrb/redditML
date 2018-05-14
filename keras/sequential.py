@@ -83,8 +83,11 @@ def run_model():
 
 
 
+    model.add(Dense(x_train.shape[0], input_dim=x_train.shape, kernel_initializer='normal', activation='relu'))
+    model.add(Dense(1, kernel_initializer='normal'))
 
-
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.summary()
 
 
 if __name__ == '__main__':

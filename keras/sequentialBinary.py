@@ -25,16 +25,16 @@ def run_model():
     model = Sequential()
     x_train, x_test, y_train, y_test = get_dataset_binary()
 
-    print x_train['title']
-    print y_train.values
+    print(x_train['title'])
+    print(y_train.values)
     vocab_size = 40000
     max_length = 50
     embedding_space = 25
     encoded_docs = [one_hot(x_train['title'].iloc[d], vocab_size) for d in range(x_train.shape[0])]
     padded_docs = pad_sequences(encoded_docs, maxlen=max_length, padding='post')
-    print padded_docs
-    print "Y_train is:"
-    print y_train
+    print(padded_docs)
+    print("Y_train is:")
+    print(y_train)
     input_dim =  x_train.shape[1]
     output_dim = 32
 
@@ -45,15 +45,23 @@ def run_model():
     model.add(Dense(1, kernel_initializer='normal'))
 
     model.compile(loss='binary_crossentropy', optimizer='adam',metrics=['acc'])
-    print model.summary()
+    print(model.summary())
 
 
 
+<<<<<<< HEAD
     history = model.fit(padded_docs,y_train.values, batch_size=128, epochs = 15)
     plot_model(model, to_file='model.png')
 
     print(history.history.keys())
 
+=======
+    history = model.fit(padded_docs,y_train.values, batch_size=128, epochs = 2)
+    plot_model(model, to_file='model.png')
+    # model.evaluate(x_test, y_test, batch_size=128)
+    loss, accuracy = model.evaluate(padded_docs, y_train.values, verbose=0)
+    print('Accuracy: %f' % (accuracy*100))
+>>>>>>> f8cd2ac4c27183be16bf1e7d83b6bd581c317307
     plt.plot(history.history['acc'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')

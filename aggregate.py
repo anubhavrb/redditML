@@ -23,12 +23,16 @@ def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
     df = df.sample(frac=0.01)
+<<<<<<< HEAD
     df = df.reset_index()
     median = df['score'].median()
     mean = df['score'].mean()
     df['above_mean'] = df.apply(lambda row: 0 if row['score'] < mean else 1, axis=1)
     df['above_median'] = df.apply(lambda row: 0 if row['score'] < median else 1, axis=1)
     print df
+=======
+
+>>>>>>> f8cd2ac4c27183be16bf1e7d83b6bd581c317307
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
     return 0
@@ -78,6 +82,7 @@ Master function to return the vectorized training and test sets.
 """
 def get_dataset():
     df = pd.read_pickle('ten_percent_sampled.pkl')
+<<<<<<< HEAD
     # for j in range(1,df.shape[0]):
     #     if not wordnet.synsets(df["title"].iloc[j]):#Comparing if word is non-English
     #        df.drop(df.index[j], inplace=True)
@@ -98,6 +103,21 @@ def get_dataset():
     #x_test = pd.DataFrame(np.hstack([x_test, v_test]))
 
     return v_train, v_test, y_train, y_test
+=======
+    df = df.sample(frac=0.5)
+    #df.to_pickle('ten-percent-sampled.pkl')
+    x_train, x_test, y_train, y_test = split_data(df)
+
+    v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
+    x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
+    x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
+
+    x_train = pd.DataFrame(np.hstack([x_train, v_train]))
+    x_test = pd.DataFrame(np.hstack([x_test, v_test]))
+    print x_train.shape
+    print x_test
+    return x_train, x_test, y_train, y_test
+>>>>>>> f8cd2ac4c27183be16bf1e7d83b6bd581c317307
 
 
 
