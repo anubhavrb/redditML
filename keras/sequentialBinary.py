@@ -13,6 +13,9 @@ from keras.utils import plot_model
 from aggregate import get_dataset
 from keras.utils.np_utils import to_categorical
 from keras.optimizers import Adam
+import matplotlib.pyplot as plt
+import numpy
+
 def coeff_determination(y_true, y_pred):
     from keras import backend as K
     SS_res =  K.sum(K.square( y_true-y_pred ))
@@ -36,8 +39,7 @@ def run_model():
     output_dim = 32
     # categorical_labels = to_categorical(y_train.values, num_classes=None)
 
-    y_binary = to_categorical(y_train)
-    print y_binary
+
 
     # model.add(Embedding(vocab_size, embedding_space, input_length=max_length))
     # model.add(Flatten())
@@ -51,19 +53,25 @@ def run_model():
     model.add(Flatten())
     model.add(Dense(100, kernel_initializer='normal',activation='relu'))
 
-    model.add(Dense(5, kernel_initializer='normal'))
+    model.add(Dense(1, kernel_initializer='normal'))
 
-    model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])
+    model.compile(loss='binary_crossentropy', optimizer='adam',metrics=['acc'])
     print model.summary()
 
 
 
-    model.fit(padded_docs,y_binary, batch_size=128, epochs = 50)
+    history = model.fit(padded_docs,y_train.values, batch_size=128, epochs = 50)
     plot_model(model, to_file='model.png')
     model.evaluate(x_test, y_test, batch_size=128)
-    loss, accuracy = model.evaluate(padded_docs, y_binary, verbose=0)
+    loss, accuracy = model.evaluate(padded_docs, y_train.values, verbose=0)
     print('Accuracy: %f' % (accuracy*100))
-
+    plt.plot(history.history['acc'])
+    plt.plot(history.history['val_acc'])
+    plt.title('model accuracy')
+    plt.ylabel('accuracy')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
 
 
 
@@ -83,11 +91,8 @@ def run_model():
 
 
 
-    model.add(Dense(x_train.shape[0], input_dim=x_train.shape, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(1, kernel_initializer='normal'))
 
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.summary()
+
 
 
 if __name__ == '__main__':

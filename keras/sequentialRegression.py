@@ -12,7 +12,7 @@ from keras.layers import Embedding
 from keras.utils import plot_model
 from aggregate import get_dataset
 from keras.utils.np_utils import to_categorical
-from keras.optimizers import Adam
+
 def coeff_determination(y_true, y_pred):
     from keras import backend as K
     SS_res =  K.sum(K.square( y_true-y_pred ))
@@ -38,20 +38,12 @@ def run_model():
 
     y_binary = to_categorical(y_train)
     print y_binary
-
-    # model.add(Embedding(vocab_size, embedding_space, input_length=max_length))
-    # model.add(Flatten())
-    # model.add(Dense(100, kernel_initializer='normal',activation='relu'))
-    #
-    # model.add(Dense(5, kernel_initializer='normal'))
-    #
-    # model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])
-    # print model.summary()
+    
     model.add(Embedding(vocab_size, embedding_space, input_length=max_length))
     model.add(Flatten())
-    model.add(Dense(100, kernel_initializer='normal',activation='relu'))
+    model.add(Dense(10, kernel_initializer='normal',activation='relu'))
 
-    model.add(Dense(5, kernel_initializer='normal'))
+    model.add(Dense(4, kernel_initializer='normal'))
 
     model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])
     print model.summary()
@@ -83,11 +75,8 @@ def run_model():
 
 
 
-    model.add(Dense(x_train.shape[0], input_dim=x_train.shape, kernel_initializer='normal', activation='relu'))
-    model.add(Dense(1, kernel_initializer='normal'))
 
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.summary()
+
 
 
 if __name__ == '__main__':

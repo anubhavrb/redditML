@@ -42,23 +42,37 @@ def vectorize_text(x_train, x_test):
     # text_train, text_test = pd.DataFrame(text_train), pd.DataFrame(text_test)
     return text_train, text_test
 
-
+def resample():
+    df = pd.read_pickle('ten_percent_sampled.pkl')
+    df = df.sample(frac=0.10)
+    df = df.reset_index()
+    df.to_pickle("resampled.pkl")
+def resample_binary():
+    df = pd.read_pickle('ten_percent_sampled2.pkl')
+    df = df.sample(frac=0.10)
+    df = df.reset_index()
+    df.to_pickle("resampled_binary.pkl")
 
 def split_data(df):
-    y = df['score']
-    x = df.drop('score', axis = 1)
+    y = df['popularity']
+    x = df.drop(['score','popularity'], axis = 1)
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
     return x_train, x_test, y_train, y_test
 def get_dataset():
-    df = pd.read_pickle('ten_percent_sampled.pkl')
-    df = df.reset_index()
+    df = pd.read_pickle('resampled.pkl')
+    df = df.reset_index(drop = True)
 
     X_train, X_test, Y_train, Y_test = split_data(df)
     return X_train,X_test,Y_train,Y_test
+def get_dataset_binary():
+    df = pd.read_pickle('resampled_binary.pkl')
+    df = df.reset_index(drop = True)
 
+    X_train, X_test, Y_train, Y_test = split_data(df)
+    return X_train,X_test,Y_train,Y_test
 def read_dataset_from_file():
     df = pd.read_pickle('ten_percent_sampled.pkl')
-    df = df.reset_index()
+    df = df.reset_index(drop = True)
     # print df.shape
     # print df
     #
@@ -72,7 +86,7 @@ def read_dataset_from_file():
     # df.to_pickle("ten_percent_engish_only.pkl")
 
     X_train, X_test, Y_train, Y_test = split_data(df)
-    
+
     v_train, v_test = vectorize_text(X_train['title'], X_test['title'])
     x_train = X_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
     x_test = X_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
@@ -83,3 +97,5 @@ def read_dataset_from_file():
     # print (x_train.shape)
     # print (v_train.shape)
     return v_train, v_test, Y_train, Y_test
+if __name__ == '__main__':
+    resample_binary()
