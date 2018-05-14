@@ -24,7 +24,7 @@ minute of hour.
 """
 def add_time_columns(row):
     utc_time = row['created_utc']
-    day_of_year = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-j')
+    day_of_year = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-j')-1
     day_of_week = dt.datetime.fromtimestamp(int(utc_time)).strftime('%w')
     hour = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-H')
     minute = dt.datetime.fromtimestamp(int(utc_time)).strftime('%-M')
@@ -49,7 +49,7 @@ def add_popularity_column(row):
     elif score < 44:
         popularity = 2
     else:
-        popularity = 4
+        popularity = 3
     return popularity
 
 """
@@ -69,5 +69,6 @@ def change_columns(row):
 
 if __name__ == "__main__":
     df = pd.read_csv("2016_2017.csv")
+    df[['day_of_year', 'day_of_week', 'hour', 'minute']] = df.apply(lambda row: add_time_columns(row), axis=1)
     df['popularity'] = df.apply(lambda row: add_popularity_column(row), axis=1)
     df.to_csv("2016_2017.csv")
