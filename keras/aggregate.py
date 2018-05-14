@@ -7,9 +7,6 @@ from sklearn.model_selection import train_test_split
 import operator
 from nltk.corpus import wordnet
 
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 
 def vectorize_text(x_train, x_test):
 
@@ -73,17 +70,7 @@ def get_dataset_binary():
 def read_dataset_from_file():
     df = pd.read_pickle('ten_percent_sampled.pkl')
     df = df.reset_index(drop = True)
-    # print df.shape
-    # print df
-    #
-    # for j in range(0,df.shape[0]-1):
-    #     if not wordnet.synsets(df['title'].iloc[j]):
-    #         df.drop([j],inplace=True)
-    #     sys.stdout.write("Deletion Progress: %d/225450   \r"%(j))
-    #     sys.stdout.flush()
-    #
-    #
-    # df.to_pickle("ten_percent_engish_only.pkl")
+
 
     X_train, X_test, Y_train, Y_test = split_data(df)
 
