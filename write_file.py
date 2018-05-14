@@ -44,12 +44,15 @@ def add_popularity_column(row):
     popularity = 0
     if score < 2:
         popularity = 0
-    elif score < 8:
-        popularity = 1
-    elif score < 44:
-        popularity = 2
+    # elif score < 8:
+    #     popularity = 1
+    # elif score < 44:
+    #     popularity = 2
+    # else:
+    #     popularity = 3
+    # return popularity
     else:
-        popularity = 3
+        popularity = 1
     return popularity
 
 """
@@ -69,6 +72,6 @@ def change_columns(row):
 
 if __name__ == "__main__":
     df = pd.read_csv("2016_2017.csv")
-    df[['day_of_year', 'day_of_week', 'hour', 'minute']] = df.apply(lambda row: add_time_columns(row), axis=1)
+    #df[['day_of_year', 'day_of_week', 'hour', 'minute']] = df.apply(lambda row: add_time_columns(row), axis=1)
     df['popularity'] = df.apply(lambda row: add_popularity_column(row), axis=1)
     df.to_csv("2016_2017.csv")

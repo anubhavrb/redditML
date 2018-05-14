@@ -139,4 +139,4 @@ def main():
     print reg.score(x_test, y_test)
 
 if __name__ == '__main__':
-    get_dataset()
+    save_sampled()
