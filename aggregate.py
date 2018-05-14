@@ -23,16 +23,14 @@ def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
     df = df.sample(frac=0.01)
-<<<<<<< HEAD
+
     df = df.reset_index()
     median = df['score'].median()
     mean = df['score'].mean()
     df['above_mean'] = df.apply(lambda row: 0 if row['score'] < mean else 1, axis=1)
     df['above_median'] = df.apply(lambda row: 0 if row['score'] < median else 1, axis=1)
     print df
-=======
 
->>>>>>> f8cd2ac4c27183be16bf1e7d83b6bd581c317307
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
     return 0

@@ -70,12 +70,7 @@ def get_dataset_binary():
 def read_dataset_from_file():
     df = pd.read_pickle('ten_percent_sampled.pkl')
     df = df.reset_index(drop = True)
-<<<<<<< HEAD
-    
-=======
 
-
->>>>>>> f8cd2ac4c27183be16bf1e7d83b6bd581c317307
     X_train, X_test, Y_train, Y_test = split_data(df)
 
     v_train, v_test = vectorize_text(X_train['title'], X_test['title'])
