@@ -37,6 +37,8 @@ def run_model():
     print y_train
     input_dim =  x_train.shape[1]
     output_dim = 32
+    model_features = Sequential()
+    
 
     model.add(Embedding(vocab_size, embedding_space, input_length=max_length))
     model.add(Flatten())
@@ -78,14 +80,6 @@ def run_model():
 
 
 
-    # # model.add(Embedding(20,
-    # #                 embedding_dims,
-    # #                 input_length=maxlen))
-    # # model.add(GlobalAveragePooling1D())
-    # # Add in regulations 64/128
-    # model.add(Dense(100, input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
-    # model.add(Dense(100, input_dim=x_train.shape[1], kernel_initializer='normal', activation='relu'))
-    # model.add(Dense(1, kernel_initializer='normal'))
 
 
     #

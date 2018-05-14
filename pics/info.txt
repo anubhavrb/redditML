@@ -1,0 +1,6 @@
+L1-100-w/out-time-50-embedding-200-maxlength
+Size: 42424
+Accuracy on new: 18.685178
+Accuracy: 20.920147
+
+

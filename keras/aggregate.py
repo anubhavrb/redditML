@@ -48,7 +48,7 @@ def resample():
     df.to_pickle("resampled.pkl")
 def resample_binary():
     df = pd.read_pickle('ten_percent_sampled2.pkl')
-    df = df.sample(frac=0.10)
+    df = df.sample(frac=0.5)
     df = df.reset_index()
     df.to_pickle("resampled_binary.pkl")
 
@@ -72,18 +72,7 @@ def get_dataset_binary():
 def read_dataset_from_file():
     df = pd.read_pickle('ten_percent_sampled.pkl')
     df = df.reset_index(drop = True)
-    # print df.shape
-    # print df
-    #
-    # for j in range(0,df.shape[0]-1):
-    #     if not wordnet.synsets(df['title'].iloc[j]):
-    #         df.drop([j],inplace=True)
-    #     sys.stdout.write("Deletion Progress: %d/225450   \r"%(j))
-    #     sys.stdout.flush()
-    #
-    #
-    # df.to_pickle("ten_percent_engish_only.pkl")
-
+    
     X_train, X_test, Y_train, Y_test = split_data(df)
 
     v_train, v_test = vectorize_text(X_train['title'], X_test['title'])

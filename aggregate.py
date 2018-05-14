@@ -2,18 +2,33 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer as TV
+from sklearn.feature_extraction import DictVectorizer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import HashingVectorizer
+import operator
+import nltk
+from nltk.corpus import wordnet
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
+
 """
 Save the sampled data to pickle file
 """
 def save_sampled():
     df = pd.read_csv("2016_2017.csv")
     df = df.fillna("")
-    df = df.sample(frac=0.05)
-    df = df[df.score != 0]
+    df = df.sample(frac=0.01)
+    df = df.reset_index()
+    median = df['score'].median()
+    mean = df['score'].mean()
+    df['above_mean'] = df.apply(lambda row: 0 if row['score'] < mean else 1, axis=1)
+    df['above_median'] = df.apply(lambda row: 0 if row['score'] < median else 1, axis=1)
+    print df
     df.to_pickle('ten_percent_sampled.pkl')
     print ("done.")
     return 0
@@ -40,6 +55,7 @@ def save_dataset_from_file():
 
 def read_dataset_from_file():
     df = pd.read_pickle('ten_percent_sampled.pkl')
+
     x_train, x_test, y_train, y_test = split_data(df)
     print (x_train)
     v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
@@ -62,17 +78,25 @@ Master function to return the vectorized training and test sets.
 """
 def get_dataset():
     df = pd.read_pickle('ten_percent_sampled.pkl')
+    # for j in range(1,df.shape[0]):
+    #     if not wordnet.synsets(df["title"].iloc[j]):#Comparing if word is non-English
+    #        df.drop(df.index[j], inplace=True)
+    #
+    # print(df.shape)
+
+
+
+
     #df.to_pickle('ten-percent-sampled.pkl')
     x_train, x_test, y_train, y_test = split_data(df)
 
-    v_train, v_test = vectorize_text(x_train['title'], x_test['title'])
+    v_train, v_test = vectorize_text_two(x_train['title'], x_test['title'])
     #x_train = x_train[['day_of_year', 'day_of_week', 'hour', 'minute']]
     #x_test = x_test[['day_of_year', 'day_of_week', 'hour', 'minute']]
 
     #x_train = pd.DataFrame(np.hstack([x_train, v_train]))
     #x_test = pd.DataFrame(np.hstack([x_test, v_test]))
-    print v_train
-    print v_test
+
     return v_train, v_test, y_train, y_test
 
 
@@ -81,8 +105,10 @@ def get_dataset():
 Function that splits df into train and test sets based on a 80:20 split.
 """
 def split_data(df):
-    y = df['score']
+    y = df['above_median']
     x = df.drop('score', axis = 1)
+    # print y
+    print x
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
     return x_train, x_test, y_train, y_test
 
@@ -93,20 +119,33 @@ def vectorize_text_two(x_train,x_test):
 
 
     x_train = x_train.fillna("")
-    count_vect = CountVectorizer()
-    X_train_counts = count_vect.fit_transform(x_train)
-    print X_train_counts.shape
+    count_vect = CountVectorizer(stop_words = 'english')
+    text_train = count_vect.fit_transform(x_train)
+    words = count_vect.get_feature_names()
+    freqs = text_train.toarray().sum(axis=0)
+    dict = {}
+    for i in range(len(words)):
+        dict[words[i]] = freqs[i]
 
-    tfidf_transformer = TfidfTransformer()
-    X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
-    print X_train_tfidf.shape
 
 
-    X_new_counts = count_vect.transform(x_test)
-    X_new_tfidf = tfidf_transformer.transform(X_new_counts)
+
+    #A = count_vect.vocabulary_
+    #topFive = dict(sorted(A.iteritems(), key=operator.itemgetter(1), reverse=True)[:100])
+    a1_sorted_keys = sorted(dict, key=dict.get, reverse=True)
+    for r in a1_sorted_keys:
+        print r, dict[r]
+    # tfidf_transformer = TfidfTransformer()
+    # X_train_tfidf = tfidf_transformer.fit_transform(X_train_counts)
+    # print X_train_tfidf.shape
+
+
+    text_test= count_vect.transform(x_test)
+    # X_new_tfidf = tfidf_transformer.transform(X_new_counts)
 
     # text_train, text_test = pd.DataFrame(text_train), pd.DataFrame(text_test)
-    return X_train_tfidf, X_new_tfidf
+
+    return text_train, text_test
 
 
 
@@ -123,11 +162,6 @@ def vectorize_text(x_train, x_test):
     return text_train, text_test
 
 def main():
-    # df = parse_csv()
-    # df = df.dropna(how = 'any')
-    # df = df.sample(frac=1)
-    # df = df.reset_index(drop = True)
-    # df.to_pickle('aggregate.pkl')
     df = pd.read_pickle('aggregate.pkl')
     print df.shape
     train_set = df.iloc[0:int(df.shape[0]*0.8)]
@@ -136,8 +170,9 @@ def main():
     x_test = test_set.drop(columns = ['score','created_utc'])
     text_train, text_test = vectorize_text(x_train,x_test)
     print text_train.shape
+
     reg = random_forest(text_train,train_set['score'],text_test,test_set['score'])
     print reg.score(x_test, y_test)
 
 if __name__ == '__main__':
-    save_sampled()
+    get_dataset()
